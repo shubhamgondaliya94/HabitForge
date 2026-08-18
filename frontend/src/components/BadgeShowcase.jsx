@@ -1,6 +1,6 @@
 import React from 'react';
 import { Award, Lock, CheckCircle2, ShieldCheck, Sparkles } from 'lucide-react';
-import { BADGE_CATALOG } from '../../../backend/services/gamificationService.js';
+import { BADGE_CATALOG } from '../services/gamificationService.js';
 
 export default function BadgeShowcase({ user }) {
   const unlockedMap = {};
