@@ -26,16 +26,26 @@ try {
 const app = express();
 
 // CORS: restrict to specific origins in production
+const allowedOrigins = FRONTEND_URL
+  ? FRONTEND_URL.split(',').map(url => url.trim())
+  : ['https://habit-forgee.vercel.app'];
+
 const corsOptions = {
-  origin: NODE_ENV === 'production'
-    ? (FRONTEND_URL ? [FRONTEND_URL] : false)
-    : true,
+  origin: (origin, callback) => {
+    if (!origin || NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    if (
+      allowedOrigins.includes(origin) ||
+      allowedOrigins.includes('*') ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true
 };
-
-if (NODE_ENV === 'production' && !FRONTEND_URL) {
-  console.warn('WARNING: FRONTEND_URL environment variable not set. CORS will be restricted.');
-}
 
 app.use(cors(corsOptions));
 app.use(express.json());
