@@ -1,8 +1,19 @@
 import axios from 'axios';
 
-// Use `VITE_API_BASE` at build time when set (points to backend URL),
-// otherwise fall back to same-origin `/api` which requires a proxy/rewrite.
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+// Normalize `VITE_API_BASE` to ensure it always includes the `/api` route prefix
+const getApiBase = () => {
+  let envBase = import.meta.env.VITE_API_BASE;
+  if (!envBase || envBase === '/' || envBase === '') {
+    return '/api';
+  }
+  envBase = envBase.replace(/\/+$/, '');
+  if (!envBase.endsWith('/api')) {
+    envBase += '/api';
+  }
+  return envBase;
+};
+
+const API_BASE = getApiBase();
 
 const api = axios.create({
   baseURL: API_BASE,
